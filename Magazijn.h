@@ -3,17 +3,19 @@
 
 #include "Arduino.h"
 
-#define UPPERSOLENOID 1
-#define LOWERSOLENOID 2
+#define OPEN 1
+#define CLOSED 0
+
 
 class Magazijn
 {
 private:
-    bool emptyMagazin();
-    void solenoid(int solenoid, int solenoidState) 
+    
+    void solenoid(int solenoid, int solenoidState);  
 public:
-    void init();
-    bool candyLaunched();
+    static void emptyMagazine();    //interupt activates when magazin is empty   run "noInterrupts()" to overwrite it
+    void init();                    //inittializes magazine module, should be put in setup
+    void launchCandy();             //launch a candy
 };
 
 extern Magazijn Magazine;
