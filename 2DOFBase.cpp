@@ -8,7 +8,7 @@
   Serial.print("2 DOF BASE CREATED..");
 }
 
-void homing(int x, int y)
+void 2DOFBase::homing(int x, int y)
 {
         if(myservoX.read() != homePosX)
         {
