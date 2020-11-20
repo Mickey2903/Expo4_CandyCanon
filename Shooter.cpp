@@ -24,6 +24,9 @@ void Shooter()
 {
 
 
+if (Calculated_RPM < Input_S1)
+    Motor_01 = Motor_01 + 1;
+millis = 
 
 
 }
