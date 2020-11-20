@@ -3,9 +3,13 @@
 
 #include "Arduino.h"
 
+//solenoid states
 #define OPEN 1
 #define CLOSED 0
 
+//delays 
+#define shootingDelay 500
+#define magazineDelay 500
 
 class Magazijn
 {

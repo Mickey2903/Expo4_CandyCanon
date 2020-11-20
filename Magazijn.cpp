@@ -22,10 +22,27 @@ void Magazijn::init() {
 
 //interupt checks if the magazin is empty
 static void emptyMagazine() {
+    solenoid(upperSolenoid, OPEN);
+
+    delay(magazineDelay);
     
     while(digitalRead(emptySensor))
     {
         //magazine is empty
         //give alarm / error
     }
+
+    solenoid(upperSolenoid, CLOSED);
+}
+
+void Magazijn::solenoid(int solenoid, int solenoidState) {
+    digitalWrite(solenoid, solenoidState);
+}
+
+void Magazijn::launchCandy() {
+    solenoid(lowerSolenoid, OPEN);
+    
+    delay(shootingDelay);
+
+    solenoid(lowerSolenoid, CLOSED);
 }
