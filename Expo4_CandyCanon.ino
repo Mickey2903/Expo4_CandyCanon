@@ -6,11 +6,13 @@
 
 void setup()
 {
+    Serial.begin(9600);
+
     Magazine.init();
     2DOFBase CandyCanon(SERVOPINX, SERVOPINY);
 }
 
 void loop() 
 {
-
+    
 }

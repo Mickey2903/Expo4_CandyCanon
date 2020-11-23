@@ -14,7 +14,7 @@ int Calculated_RPM;         //Calculated RPM;
 int Motor1Up2speed;          // motor 1 has the desired speed?
 int Motor2Up2speed;          // motor 2 has the desired speed?
 
-
+// Dit is de code van Quido Joebens uit Snobbicht, ik ben 16 jaar oud en mijn hobby is motoren slopen
 
 ///////////////////////////setup/////////////////////////////////////
     pinMode(Safety_switch_1, INPUT);

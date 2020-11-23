@@ -5,18 +5,21 @@
             "includePath": [
                 "D:\\Program Files (x86)\\Arduino\\tools\\**",
                 "D:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
-                "D:\\Program Files (x86)\\Arduino\\libraries\\"
+                "D:\\Program Files (x86)\\Arduino\\libraries\\",
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
+                "C:\\Program Files (x86)\\Arduino\\tools\\**"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
-                "path": [              
+                "path": [
                     "D:\\Program Files (x86)\\Arduino\\tools\\**",
                     "D:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\**",
                     "D:\\Program Files (x86)\\Arduino\\libraries\\**"
                 ]
             },
             "forcedInclude": [
-                "D:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
+                "D:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h",
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
             ],
             "intelliSenseMode": "msvc-x64",
             "cStandard": "c17",
