@@ -16,8 +16,8 @@ int Calculated_RPM;         //Calculated RPM;
 
 int Motor1Up2speed;          // motor 1 has the desired speed?
 int Motor2Up2speed;          // motor 2 has the desired speed?
+int Shoot;
 
-// Dit is de code van Quido Joebens uit Snobbicht, ik ben 16 jaar oud en mijn hobby is motoren slopen
 
 
 void Motor_Speed()
@@ -40,7 +40,7 @@ int time2u;     //time motor 2 up
         Speed1 = Speed1 + 1;
         analogWrite(Motor_01, Speed1);
         time1u = millis();                                                                             // timer, otherwise the motor would overshoot its desired speed
-        }
+        
     }
 
     else if (Calculated_RPM + 20 >= Input_S1 && Calculated_RPM - 20 <= Input_S1)             // Motor 1 on desired RPM
@@ -83,6 +83,6 @@ int time2u;     //time motor 2 up
 
     if(Motor1Up2speed == 1 && Motor2Up2speed == 1)
     {
-        int Shoot = 1;
+        Shoot = 1;
     }
 }
