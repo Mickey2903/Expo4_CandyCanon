@@ -62,16 +62,24 @@ void Read_Serial() {
     X = X / 100;
     r = r /100;
     Serial.println();
-    Serial.print("Bowl Height: ");
+    Serial.print("Begin Height:");
+    Serial.print(Y0);
+    Serial.println(" Meters");
+
+    Serial.print("Maximum Height:");
+    Serial.print(Y1);
+    Serial.println(" Meters");
+
+    Serial.print("End Height: ");
     Serial.print(Y2);
     Serial.println(" Meters");
 
-    Serial.print("Bowl distance:");
+    Serial.print("Distance:");
     Serial.print(X);
     Serial.println(" Meters");
 
-    Serial.print("Ceilingheight:");
-    Serial.print(Y1);
+    Serial.print("Wheel radius:");
+    Serial.print(r);
     Serial.println(" Meters");
     Serial.println();
     }
@@ -87,10 +95,10 @@ void Calculation()
   {
     Tell = true;
   
-    V0y = sqrt((2) * 9.18 * Y1 - Y0);
-    V0x = X / ((sqrt(2 * 9.18 * (Y1 - Y0))) / 9.18 + ((sqrt(-2 * 9.18 * (Y2 - Y1))) / 9.18));
+    V0y = sqrt((2) * 9.81 * (Y1 - Y0));
+    V0x = X / ((sqrt(2 * 9.81 * (Y1 - Y0))) / 9.81 + ((sqrt(-2 * 9.81 * (Y2 - Y1))) / 9.81));
     V0 = sqrt((V0x * V0x) + (V0y * V0y));
-    Calculated_RPM = 60 / (2*3.14159265359*r)*V0;
+    Calculated_RPM = 60 / (2 * 3.14159265359 * r) * V0;
 
 
     Serial.print("V0x = ");
