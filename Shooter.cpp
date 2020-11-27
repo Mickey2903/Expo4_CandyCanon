@@ -40,7 +40,7 @@ void Read_Serial() {
   if (Ask == false)
   {
     Ask = true;
-    Serial.println(" Write down 'Bowlheight Bowldistance Ceilingheight'");
+    Serial.println(" Write down 'Bowlheight Bowldistance Ceilingheight' in CM");
     Serial.println(" for example : '30 500 200' "); 
   
 
