@@ -27,6 +27,7 @@ float Y2;                       //Bowl height
 float V0x;
 float V0y;
 float V0;
+float Angle;
 int Calculated_RPM;             //Calculated RPM;                               Calculated
 
 
@@ -82,6 +83,8 @@ void Read_Serial() {
     Serial.print(r);
     Serial.println(" Meters");
     Serial.println();
+
+    Calculation();
     }
 }
 
@@ -98,6 +101,7 @@ void Calculation()
     V0y = sqrt((2) * 9.81 * (Y1 - Y0));
     V0x = X / ((sqrt(2 * 9.81 * (Y1 - Y0))) / 9.81 + ((sqrt(-2 * 9.81 * (Y2 - Y1))) / 9.81));
     V0 = sqrt((V0x * V0x) + (V0y * V0y));
+    Angle = ((atan(V0y/V0x))*180)/(3.14159);
     Calculated_RPM = 60 / (2 * 3.14159265359 * r) * V0;
 
 
@@ -110,6 +114,10 @@ void Calculation()
     Serial.print("V0 = ");
     Serial.print(V0);
     Serial.println(" M/Sec");
+    Serial.println();
+    Serial.print("Desired Angle = ");
+    Serial.print(Angle);
+    Serial.println(" Degree");
     Serial.print("Desired RPM = ");
     Serial.print(Calculated_RPM);
     Serial.println(" RPM");
@@ -207,4 +215,9 @@ int Motor2Up2speed;          // motor 2 has the desired speed?
     {
         readytoshoot = true;
     }
+    else
+    {
+        readytoshoot = false;
+    }
+    
 }
