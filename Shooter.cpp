@@ -41,7 +41,7 @@ void Read_Serial() {
   if (Ask == false)
   {
     Ask = true;
-    Serial.println(" Write down 'Bowlheight Bowldistance Ceilingheight' in CM");
+    Serial.println(" Write down 'Bowlheight Bowldistance Maximumheight' in CM");
     Serial.println(" for example : '30 500 200' "); 
   
 
@@ -64,23 +64,23 @@ void Read_Serial() {
     r = r /100;
     Serial.println();
     Serial.print("Begin Height:");
-    Serial.print(Y0);
+    Serial.print(Y0,3);
     Serial.println(" Meters");
 
     Serial.print("Maximum Height:");
-    Serial.print(Y1);
+    Serial.print(Y1,3);
     Serial.println(" Meters");
 
     Serial.print("End Height: ");
-    Serial.print(Y2);
+    Serial.print(Y2,3);
     Serial.println(" Meters");
 
     Serial.print("Distance:");
-    Serial.print(X);
+    Serial.print(X,3);
     Serial.println(" Meters");
 
     Serial.print("Wheel radius:");
-    Serial.print(r);
+    Serial.print(r,3);
     Serial.println(" Meters");
     Serial.println();
 
