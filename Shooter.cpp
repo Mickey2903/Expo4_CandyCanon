@@ -1,13 +1,13 @@
 #include "Shooter.h"
 
-
-#define Input_S1  ;               //RPM from encoder MOTOR 1                  IN
-#define Input_S2 ;               //RPM from encoder MOTOR 2                  IN
+//////////////////MOTOR SPEED//////////////////////////////////////////////
+#define Input_S1                 //RPM from encoder MOTOR 1                  IN
+#define Input_S2                //RPM from encoder MOTOR 2                  IN
 
 int Motor1RPM;
 int Motor2RPM;
 
-#define Safety_switch_1 ;    //Safety switch for the motors                  IN
+#define Safety_switch_1     //Safety switch for the motors                  IN
 int Safety_switch;
 
 int Motor_01;               //OUT RPM Motor 1                               OUT
@@ -17,6 +17,8 @@ int Speed1 = 100;            //initial speed of the Motor 1, 0-255
 int Speed2 = 100;            //initial speed of the Motor 2, 0-255
 
 bool readytoshoot;
+
+///////////////////////CALCULATIONS & Serial READ////////////////////////////////////
 
 float r = 5;                   // Wheel R in Meters
 float X;                        //Bowl distance
@@ -34,13 +36,66 @@ int Calculated_RPM;             //Calculated RPM;                               
 bool Ask = false;
 bool Tell = false;
 
+///////////////////////////RPM CALCULATOR/////////////////////////////
+
+volatile byte rpmcount1 = 0;
+volatile byte rpmcount2 = 0;
+unsigned int rpm1 = 0;
+unsigned int rpm2= 0;
+unsigned long timeold1 = 0;
+unsigned long timeold2 = 0;
+int magnets = 2;                           ////How many magnets are on the wheel?
+
+
+
+void Shooter_Init()
+{
+    pinMode(Safety_switch_1, INPUT);
+    pinMode(Input_S1, INPUT);
+    pinMode(Input_S2, INPUT);
+    pinMode(Motor_01, OUTPUT);
+    pinMode(Motor_02, OUTPUT);
+    attachInterrupt(Input_S1, ENCODER_READER_1, RISING);
+    attachInterrupt(Input_S2, ENCODER_READER_2, RISING);
+
+
+}
+
+
+
+
+void ENCODER_READER_1()
+{
+  rpmcount1++;
+
+  if (rpmcount1 >= 20) {
+    
+    rpm1 = (60000/(millis() - timeold1))*rpmcount1;
+    Motor1RPM = rpm1 / magnets;
+    timeold1 = millis();
+    rpmcount1 = 0;
+    Serial.println(Motor1RPM);
+  }
+}
+
+
+void ENCODER_READER_2()
+{
+  rpmcount2++;
+  
+  if (rpmcount2 >= 20) {
+    
+    rpm2 = (60000/(millis() - timeold2))*rpmcount2;
+    Motor2RPM = rpm2 / magnets;
+    timeold2 = millis();
+    rpmcount2 = 0;
+  }
+}
+
 
 
 void Read_Serial() {
 
-  if (Ask == false)
-  {
-    Ask = true;
     Serial.println(" Write down 'Bowlheight Bowldistance Maximumheight' in CM");
     Serial.println(" for example : '30 500 200' "); 
   
@@ -83,21 +138,12 @@ void Read_Serial() {
     Serial.print(r,3);
     Serial.println(" Meters");
     Serial.println();
-
-    Calculation();
-    }
+    
 }
-
-
 
 
 void Calculation()
 {
-
- if (Tell == false)
-  {
-    Tell = true;
-  
     V0y = sqrt((2) * 9.81 * (Y1 - Y0));
     V0x = X / ((sqrt(2 * 9.81 * (Y1 - Y0))) / 9.81 + ((sqrt(-2 * 9.81 * (Y2 - Y1))) / 9.81));
     V0 = sqrt((V0x * V0x) + (V0y * V0y));
@@ -121,7 +167,7 @@ void Calculation()
     Serial.print("Desired RPM = ");
     Serial.print(Calculated_RPM);
     Serial.println(" RPM");
-  }  
+  
 }
 
 
@@ -129,8 +175,6 @@ void Read_Inputs()
 {
 
 Safety_switch= digitalRead(Safety_switch_1);
-Motor1RPM = analogRead(Input_S1);
-Motor2RPM = analogRead(Input_S2);
 
 }
 
@@ -185,7 +229,6 @@ int time2u;     //time motor 2 up
 void Up2speed()
 {
 
-Read_Inputs();
 
 int Motor1Up2speed;          // motor 1 has the desired speed?
 int Motor2Up2speed;          // motor 2 has the desired speed?
@@ -220,4 +263,16 @@ int Motor2Up2speed;          // motor 2 has the desired speed?
         readytoshoot = false;
     }
     
+}
+
+
+
+
+void SHOOTER()
+{
+
+Motor_Speed_1();
+Motor_Speed_2();
+Up2speed();
+
 }
