@@ -15,6 +15,16 @@ void setup()
     2DOFBase CandyCanon(SERVOPINX, SERVOPINY);
 
 
+<<<<<<< Updated upstream
+=======
+///////////////////////////SHOOTER/////////////////////////////////////
+
+    pinMode(Safety_switch_1, INPUT);
+    pinMode(Input_S1, INPUT);
+    pinMode(Input_S2, INPUT);
+    pinMode(Motor_01, OUTPUT);
+    pinMode(Motor_02, OUTPUT);
+>>>>>>> Stashed changes
 
 
 }

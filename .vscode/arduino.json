@@ -1,4 +1,4 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "Yannick.ino"
+    "sketch": "ServoTest.ino"
 }
