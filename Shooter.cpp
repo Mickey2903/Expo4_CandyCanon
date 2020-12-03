@@ -1,50 +1,6 @@
 #include "Shooter.h"
 
-//////////////////MOTOR SPEED//////////////////////////////////////////////
-#define Input_S1                 //RPM from encoder MOTOR 1                  IN
-#define Input_S2                //RPM from encoder MOTOR 2                  IN
 
-int Motor1RPM;
-int Motor2RPM;
-
-#define Safety_switch_1     //Safety switch for the motors                  IN
-int Safety_switch;
-
-int Motor_01;               //OUT RPM Motor 1                               OUT
-int Motor_02;               //OUT RPM Motor 2                               OUT
-
-int Speed1 = 100;            //initial speed of the Motor 1, 0-255
-int Speed2 = 100;            //initial speed of the Motor 2, 0-255
-
-bool readytoshoot;
-
-///////////////////////CALCULATIONS & Serial READ////////////////////////////////////
-
-float r = 5;                   // Wheel R in Meters
-float X;                        //Bowl distance
-float Y0 = 20;                  //begin heigth in CM
-float Y1;                       //ceiling height
-float Y2;                       //Bowl height
-
-float V0x;
-float V0y;
-float V0;
-float Angle;
-int Calculated_RPM;             //Calculated RPM;                               Calculated
-
-
-bool Ask = false;
-bool Tell = false;
-
-///////////////////////////RPM CALCULATOR/////////////////////////////
-
-volatile byte rpmcount1 = 0;
-volatile byte rpmcount2 = 0;
-unsigned int rpm1 = 0;
-unsigned int rpm2= 0;
-unsigned long timeold1 = 0;
-unsigned long timeold2 = 0;
-int magnets = 2;                           ////How many magnets are on the wheel?
 
 
 
@@ -57,7 +13,6 @@ void Shooter_Init()
     pinMode(Motor_02, OUTPUT);
     attachInterrupt(Input_S1, ENCODER_READER_1, RISING);
     attachInterrupt(Input_S2, ENCODER_READER_2, RISING);
-
 
 }
 
@@ -173,9 +128,7 @@ void Calculation()
 
 void Read_Inputs()
 {
-
 Safety_switch= digitalRead(Safety_switch_1);
-
 }
 
 void Motor_Speed_1()        ////////////////////////////////////MOTOR1////////////////////////////////////////////////////
@@ -204,7 +157,6 @@ int time1u;     //time motor 1 up
 
 void Motor_Speed_2()        ////////////////////////////////////MOTOR2////////////////////////////////////////////////////
 {
-
 Read_Inputs();
 
 int time2d;     //time motor 2 down
@@ -228,7 +180,6 @@ int time2u;     //time motor 2 up
 
 void Up2speed()
 {
-
 
 int Motor1Up2speed;          // motor 1 has the desired speed?
 int Motor2Up2speed;          // motor 2 has the desired speed?
@@ -262,7 +213,6 @@ int Motor2Up2speed;          // motor 2 has the desired speed?
     {
         readytoshoot = false;
     }
-    
 }
 
 

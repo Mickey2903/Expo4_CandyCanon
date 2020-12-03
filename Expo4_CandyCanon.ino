@@ -1,54 +1,48 @@
 #include "Magazijn.h"
-#include "2DOFBASE.h"
+#include "2DOFBASEV2.h"
 #include "Shooter.h"
 
-#define SERVOPINX 8;
-#define SERVOPINY 9;
+#define SERVOPINX 8
+#define SERVOPINY 9
 
 int state = 0;
+double homingX = 90, homingY = 22.5;
 
 void setup()
 {
     Serial.begin(9600);
     Shooter_Init();
     Magazine.init();
-    2DOFBase CandyCanon(SERVOPINX, SERVOPINY);
-
-
-<<<<<<< Updated upstream
-=======
-///////////////////////////SHOOTER/////////////////////////////////////
-
-    pinMode(Safety_switch_1, INPUT);
-    pinMode(Input_S1, INPUT);
-    pinMode(Input_S2, INPUT);
-    pinMode(Motor_01, OUTPUT);
-    pinMode(Motor_02, OUTPUT);
->>>>>>> Stashed changes
-
-
 }
 
 void loop() 
 {
-
     switch(state)
     {
         case 0: 
             Read_Serial();
             Calculation();
+            homing(homingX,homingY);
             state =1;
         break;
         
         case 1:
-        // Set angle
-        // Servo.goTo(x,y)
+        goTo(90, Angle);
         state = 2;
         break;
 
         case 2:
-        SHOOTER();
-        state = 3;
+        SHOOTER();                              //EXTRA check
+        
+        if(readytoshoot == true)                // if the speed is right go to next state
+            {
+                state = 3;
+            }
+        else
+            {
+                SHOOTER();
+            }
+        
         break;
 
         case 3:
@@ -61,7 +55,4 @@ void loop()
         // Default state
         break;
     }
-
-
-
 }
