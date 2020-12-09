@@ -2,8 +2,6 @@
 
 
 
-
-
 void Shooter_Init()
 {
     pinMode(Safety_switch_1, INPUT);
@@ -11,13 +9,19 @@ void Shooter_Init()
     pinMode(Input_S2, INPUT);
     pinMode(Motor_01, OUTPUT);
     pinMode(Motor_02, OUTPUT);
-    pinMode(MotorDirection_01, OUTPUT);
-    pinMode(MotorDirection_02, OUTPUT);
+    pinMode(MotorDirection_M1_Pin1, OUTPUT);
+    pinMode(MotorDirection_M1_Pin2, OUTPUT);
+    pinMode(MotorDirection_M2_Pin1, OUTPUT);
+    pinMode(MotorDirection_M2_Pin2, OUTPUT);
     attachInterrupt(Input_S1, ENCODER_READER_1, RISING);
     attachInterrupt(Input_S2, ENCODER_READER_2, RISING);
 
-}
 
+    digitalWrite(MotorDirection_M1_Pin1, HIGH);             //Rotating Direction Motor 1
+    digitalWrite(MotorDirection_M1_Pin2, LOW);
+    digitalWrite(MotorDirection_M2_Pin1, LOW);              //Rotating Direction Motor 2
+    digitalWrite(MotorDirection_M2_Pin2, HIGH);
+}
 
 
 
@@ -144,9 +148,7 @@ int time1u;     //time motor 1 up
     if (Calculated_RPM < Motor1RPM && Safety_switch == HIGH && (time1d + 50) <= millis())                   //Motor 1 slowing down
     {   
         Speed1 = Speed1 - 1;
-        analogWrite(Motor_01, Speed1);
-        digitalWrite(MotorDirection_01, HIGH);
-        
+        analogWrite(Motor_01, Speed1);       
         time1d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
 
@@ -154,7 +156,6 @@ int time1u;     //time motor 1 up
     {   
         Speed1 = Speed1 + 1;
         analogWrite(Motor_01, Speed1);
-        digitalWrite(MotorDirection_02, LOW);
         time1u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
 }
