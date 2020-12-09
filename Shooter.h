@@ -13,8 +13,11 @@ int Safety_switch;
 #define Motor_01 2               //OUT RPM Motor 1                               OUT
 #define Motor_02 3             //OUT RPM Motor 2                               OUT
 
-#define MotorDirection_01 12               //OUT RPM Motor 1                               OUT
-#define MotorDirection_02 13             //OUT RPM Motor 2 
+#define MotorDirection_M1_Pin1 12               //OUT RPM Motor 1                               OUT
+#define MotorDirection_M1_Pin2 13               //OUT RPM Motor 1                               OUT
+
+#define MotorDirection_M2_Pin1 14             //OUT RPM Motor 2 
+#define MotorDirection_M2_Pin2 15             //OUT RPM Motor 2 
 
 int Speed1 = 100;            //initial speed of the Motor 1, 0-255
 int Speed2 = 100;            //initial speed of the Motor 2, 0-255
