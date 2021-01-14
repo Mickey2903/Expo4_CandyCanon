@@ -13,8 +13,8 @@ void Shooter_Init()
     pinMode(MotorDirection_M1_Pin2, OUTPUT);
     pinMode(MotorDirection_M2_Pin1, OUTPUT);
     pinMode(MotorDirection_M2_Pin2, OUTPUT);
-    attachInterrupt(Input_S1, ENCODER_READER_1, RISING);
-    attachInterrupt(Input_S2, ENCODER_READER_2, RISING);
+    attachInterrupt(digitalPinToInterrupt(Input_S1), ENCODER_READER_1, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Input_S2), ENCODER_READER_2, FALLING);
 
 
     digitalWrite(MotorDirection_M1_Pin1, HIGH);             //Rotating Direction Motor 1
