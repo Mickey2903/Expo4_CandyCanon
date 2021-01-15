@@ -7,6 +7,8 @@
 int Motor1RPM;
 int Motor2RPM;
 
+int Writetime = 50;
+
 #define Safety_switch_1 6     //Safety switch for the motors                  IN
 int Safety_switch;
 

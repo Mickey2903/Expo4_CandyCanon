@@ -13,8 +13,8 @@ void Shooter_Init()
     pinMode(MotorDirection_M1_Pin2, OUTPUT);
     pinMode(MotorDirection_M2_Pin1, OUTPUT);
     pinMode(MotorDirection_M2_Pin2, OUTPUT);
-    attachInterrupt(Input_S1, ENCODER_READER_1, RISING);
-    attachInterrupt(Input_S2, ENCODER_READER_2, RISING);
+    attachInterrupt(digitalPinToInterrupt(Input_S1), ENCODER_READER_1, FALLING);
+    attachInterrupt(digitalPinToInterrupt(Input_S2), ENCODER_READER_2, FALLING);
 
 
     digitalWrite(MotorDirection_M1_Pin1, HIGH);             //Rotating Direction Motor 1
@@ -145,14 +145,14 @@ Read_Inputs();
 int time1d;     //time motor 1 down
 int time1u;     //time motor 1 up
 
-    if (Calculated_RPM < Motor1RPM && Safety_switch == HIGH && (time1d + 50) <= millis())                   //Motor 1 slowing down
+    if (Calculated_RPM < Motor1RPM && Safety_switch == HIGH && (time1d + Writetime) <= millis())                   //Motor 1 slowing down
     {   
         Speed1 = Speed1 - 1;
         analogWrite(Motor_01, Speed1);       
         time1d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
 
-    else if (Calculated_RPM > Motor1RPM && Safety_switch == HIGH && (time1u + 50) <= millis())              //motor 1 speeding up
+    else if (Calculated_RPM > Motor1RPM && Safety_switch == HIGH && (time1u + Writetime) <= millis())              //motor 1 speeding up
     {   
         Speed1 = Speed1 + 1;
         analogWrite(Motor_01, Speed1);
@@ -168,14 +168,14 @@ Read_Inputs();
 int time2d;     //time motor 2 down
 int time2u;     //time motor 2 up
 
-    if (Calculated_RPM < Motor2RPM && Safety_switch == HIGH && (time2d + 50) <= millis())                   //Motor 2 slowing down
+    if (Calculated_RPM < Motor2RPM && Safety_switch == HIGH && (time2d + Writetime) <= millis())                   //Motor 2 slowing down
     {   
         Speed2 = Speed2 - 1;
         analogWrite(Motor_02, Speed2);
         time2d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
 
-    else if (Calculated_RPM > Motor2RPM && Safety_switch == HIGH && (time2u + 50) <= millis())              //motor 2 speeding up
+    else if (Calculated_RPM > Motor2RPM && Safety_switch == HIGH && (time2u + Writetime) <= millis())              //motor 2 speeding up
     {   
         Speed2 = Speed2 + 1;
         analogWrite(Motor_02, Speed2);
