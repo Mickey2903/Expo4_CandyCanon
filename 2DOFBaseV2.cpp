@@ -1,6 +1,7 @@
 void servo_Init() {
-  myServoY.attach(6);
-  myServoX.attach(7);
+  myServoY1.attach(7);
+  myServoY2.attach(8);
+  myServoX.attach(9);
 
   Serial.begin(9600);
 
@@ -13,9 +14,12 @@ void homing(double x, double y)
   Serial.print(x);
   delay(100);
 
-  myServoY.write(y);
+  myServoY1.write(y);
+  myServoY2.write(-y);
   Serial.print(" Y Pos: ");
   Serial.println(y);
+
+ 
 
 }
 
@@ -26,7 +30,8 @@ void goTo(double x, double y)
   Serial.print(x);
   delay(100);
 
-  myServoY.write(y);
+  myServoY1.write(y);
+  myServoY2.write(-y);
   Serial.print(" Y Pos: ");
   Serial.println(y);
 }
