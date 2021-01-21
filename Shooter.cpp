@@ -192,9 +192,6 @@ Read_Inputs();
 void Up2speed()
 {
 
-int Motor1Up2speed;          // motor 1 has the desired speed?
-int Motor2Up2speed;          // motor 2 has the desired speed?
-
 
     if (Calculated_RPM + 20 >= Motor1RPM && Calculated_RPM - 20 <= Motor1RPM)                       // Motor 1 on desired RPM
     {

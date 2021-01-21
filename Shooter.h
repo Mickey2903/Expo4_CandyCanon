@@ -26,6 +26,11 @@ int Speed2 = 100;            //initial speed of the Motor 2, 0-255
 
 bool readytoshoot;
 
+int Motor1Up2speed;          // motor 1 has the desired speed?
+int Motor2Up2speed;          // motor 2 has the desired speed?
+
+
+
 int time1d =0;     //time motor 1 down
 int time1u =0;     //time motor 1 up
 
