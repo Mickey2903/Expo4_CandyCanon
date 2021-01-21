@@ -35,7 +35,7 @@ void ENCODER_READER_1()
     Motor1RPM = rpm1 / magnets;
     timeold1 = millis();
     rpmcount1 = 0;
-    Serial.println(Motor1RPM);
+    
   }
 }
 
@@ -134,7 +134,7 @@ void Calculation()
 
 void Read_Inputs()
 {
-Safety_switch= digitalRead(Safety_switch_1);
+Safety_switch = HIGH; //digitalRead(Safety_switch_1);
 }
 
 void Motor_Speed_1()        ////////////////////////////////////MOTOR1////////////////////////////////////////////////////
@@ -142,8 +142,6 @@ void Motor_Speed_1()        ////////////////////////////////////MOTOR1//////////
 
 Read_Inputs();
 
-int time1d;     //time motor 1 down
-int time1u;     //time motor 1 up
 
     if (Calculated_RPM < Motor1RPM && Safety_switch == HIGH && (time1d + Writetime) <= millis())                   //Motor 1 slowing down
     {   
@@ -158,6 +156,10 @@ int time1u;     //time motor 1 up
         analogWrite(Motor_01, Speed1);
         time1u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
+    else if(Safety_switch == LOW)
+    {
+        analogWrite(Motor_01, 0);
+    }
 }
 
 
@@ -165,8 +167,6 @@ void Motor_Speed_2()        ////////////////////////////////////MOTOR2//////////
 {
 Read_Inputs();
 
-int time2d;     //time motor 2 down
-int time2u;     //time motor 2 up
 
     if (Calculated_RPM < Motor2RPM && Safety_switch == HIGH && (time2d + Writetime) <= millis())                   //Motor 2 slowing down
     {   
@@ -181,6 +181,11 @@ int time2u;     //time motor 2 up
         analogWrite(Motor_02, Speed2);
         time2u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }   
+    
+    else if(Safety_switch == LOW)
+    {
+        analogWrite(Motor_02, 0);
+    }
 }
 
 

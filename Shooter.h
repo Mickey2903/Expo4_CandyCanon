@@ -26,6 +26,12 @@ int Speed2 = 100;            //initial speed of the Motor 2, 0-255
 
 bool readytoshoot;
 
+int time1d =0;     //time motor 1 down
+int time1u =0;     //time motor 1 up
+
+int time2d;     //time motor 2 down
+int time2u;     //time motor 2 up
+
 ///////////////////////CALCULATIONS & Serial READ////////////////////////////////////
 
 float r = 5;                   // Wheel R in Meters
