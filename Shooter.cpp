@@ -5,8 +5,8 @@
 void Shooter_Init()
 {
     pinMode(Safety_switch_1, INPUT);
-    pinMode(Input_S1, INPUT);
-    pinMode(Input_S2, INPUT);
+    pinMode(Input_S1, INPUT_PULLUP);
+    pinMode(Input_S2, INPUT_PULLUP);
     pinMode(Motor_01, OUTPUT);
     pinMode(Motor_02, OUTPUT);
     pinMode(MotorDirection_M1_Pin1, OUTPUT);
