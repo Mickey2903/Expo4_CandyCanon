@@ -145,14 +145,14 @@ Read_Inputs();
 
     if (Calculated_RPM < Motor1RPM && Safety_switch == HIGH && (time1d + Writetime) <= millis())                   //Motor 1 slowing down
     {   
-        Speed1 = Speed1 - 1;
+        Speed1 = 0; //Speed1 - 1;
         analogWrite(Motor_01, Speed1);       
         time1d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }
 
     else if (Calculated_RPM > Motor1RPM && Safety_switch == HIGH && (time1u + Writetime) <= millis())              //motor 1 speeding up
     {   
-        Speed1 = Speed1 + 1;
+        Speed1 = 0; //Speed1 + 1;
         analogWrite(Motor_01, Speed1);
         time1u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
     }

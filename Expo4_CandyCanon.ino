@@ -45,7 +45,7 @@ void loop()
         Serial.print(Speed1);
         Serial.print("     Motor_2_RPM= ");
         Serial.print(Motor2RPM);
-        Serial.print("     Motor_1_PWM= ");
+        Serial.print("     Motor_2_PWM= ");
         Serial.println(Speed2);
 
         timeserial = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
