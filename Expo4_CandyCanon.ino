@@ -34,6 +34,24 @@ void loop()
         case 2:
         SHOOTER();                              //EXTRA check
         
+            if ((timeserial + 1000) <= millis())                   //Serial printing motor speed information//
+    {   
+      
+        Serial.print("Calculated_RPM= ");
+        Serial.print(Calculated_RPM);
+        Serial.print("     Motor_1_RPM= ");
+        Serial.print(Motor1RPM);
+        Serial.print("     Motor_1_PWM= ");
+        Serial.print(Speed1);
+        Serial.print("     Motor_2_RPM= ");
+        Serial.print(Motor2RPM);
+        Serial.print("     Motor_1_PWM= ");
+        Serial.println(Speed2);
+
+        timeserial = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+    }
+
+
         if(readytoshoot == true)                // if the speed is right go to next state
             {
                 state = 3;

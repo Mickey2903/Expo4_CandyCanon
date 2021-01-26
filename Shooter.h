@@ -7,7 +7,7 @@
 int Motor1RPM;
 int Motor2RPM;
 
-int Writetime = 50;
+int Writetime = 100;
 
 #define Safety_switch_1 6     //Safety switch for the motors                  IN
 int Safety_switch;
@@ -21,8 +21,8 @@ int Safety_switch;
 #define MotorDirection_M2_Pin1 14             //OUT RPM Motor 2 
 #define MotorDirection_M2_Pin2 15             //OUT RPM Motor 2 
 
-int Speed1 = 100;            //initial speed of the Motor 1, 0-255
-int Speed2 = 100;            //initial speed of the Motor 2, 0-255
+byte Speed1 = 100;            //initial speed of the Motor 1, 0-255
+byte Speed2 = 100;            //initial speed of the Motor 2, 0-255
 
 bool readytoshoot;
 
@@ -37,11 +37,14 @@ int time1u =0;     //time motor 1 up
 int time2d;     //time motor 2 down
 int time2u;     //time motor 2 up
 
+
+int timeserial =0;
+
 ///////////////////////CALCULATIONS & Serial READ////////////////////////////////////
 
-float r = 5;                   // Wheel R in Meters
+float r = 7;                   // Wheel R in Meters
 float X;                        //Bowl distance
-float Y0 = 20;                  //begin heigth in CM
+float Y0 = 19;         //centerdist 90gr 196mm 180gr 185mm        //begin heigth in CM
 float Y1;                       //ceiling height
 float Y2;                       //Bowl height
 
