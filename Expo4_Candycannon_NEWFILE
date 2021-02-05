@@ -1,0 +1,453 @@
+
+int state = 0;
+bool on_state;
+
+#include <Servo.h>
+
+Servo myservoYL;
+Servo myservoYR;
+
+
+int pos1 = 100;
+int pos2 = 120;
+int pos3 = 140;
+int pos4 = 160;
+
+int posLHorizontal = 85;
+int posRHorizontal = 97;
+int InputAngle = 0;
+int ServoAngle = 0;
+int posLservo = 0;
+int posRservo = 0;
+int newPosServo = 0;
+int oldPosServo = 0;
+
+//SHOOTER
+
+//////////////////MOTOR SPEED//////////////////////////////////////////////
+#define Input_S1 3                                    //RPM from encoder MOTOR 1                  IN
+#define Input_S2 2                              //RPM from encoder MOTOR 2                  IN
+
+int Motor1RPM;
+int Motor2RPM;
+
+int Writetime = 500;
+
+#define Safety_switch_1 6                        //Safety switch for the motors                  IN
+int Safety_switch;
+
+#define Motor_01 37                            //OUT RPM Motor 1                               OUT
+#define Motor_02 25                               //OUT RPM Motor 2                               OUT
+
+#define MotorDirection_M1_Pin1 40               //OUT RPM Motor 1                               OUT
+#define MotorDirection_M1_Pin2 4               //OUT RPM Motor 1                               OUT
+
+#define MotorDirection_M2_Pin1 38             //OUT RPM Motor 2 
+#define MotorDirection_M2_Pin2 5             //OUT RPM Motor 2 
+
+byte Speed1 = 200;                              //initial speed of the Motor 1, 0-255
+byte Speed2 = 200;                               //initial speed of the Motor 2, 0-255
+
+bool readytoshoot;
+
+int Motor1Up2speed;          // motor 1 has the desired speed?
+int Motor2Up2speed;          // motor 2 has the desired speed?
+
+int time1d = 0;    //time motor 1 down
+int time1u = 0;    //time motor 1 up
+
+int time2d;     //time motor 2 down
+int time2u;     //time motor 2 up
+
+
+int timeserial = 0;
+
+///////////////////////CALCULATIONS & Serial READ////////////////////////////////////
+
+float r = 6;                   // Wheel R in Meters
+float X;                        //Bowl distance
+float Y0 = 19;                  //begin heigth in CM
+float Y1;                       //ceiling height
+float Y2;                       //Bowl height
+
+float V0x;
+float V0y;
+float V0;
+float Angle;
+int Calculated_RPM;             //Calculated RPM;                               Calculated
+
+
+bool Ask = false;
+bool Tell = false;
+
+///////////////////////////RPM CALCULATOR/////////////////////////////
+
+volatile byte rpmcount1 = 0;
+volatile byte rpmcount2 = 0;
+unsigned int rpm1 = 0;
+unsigned int rpm2 = 0;
+unsigned long timeold1 = 0;
+unsigned long timeold2 = 0;
+int magnets = 1;                           ////How many magnets are on the wheel?
+
+
+void Shooter_Init();                // Initializes the shooting wheels
+void Read_Serial();
+void Calculation();
+void Read_Inputs();
+void Motor_Speed_1();
+void Motor_Speed_2();
+void Up2speed();
+void SHOOTER();
+
+void setup()
+{
+  Serial.begin(9600);
+  Shooter_Init();
+  
+
+  //HOMING
+
+myservoYL.attach(7);
+  myservoYR.attach(8);
+
+  //HOMING
+  myservoYL.write(posLHorizontal);
+  myservoYR.write(posRHorizontal);
+  delay(2000);
+  
+}
+
+
+void servoLRcontrol()
+{
+  InputAngle = Angle;
+  ServoAngle = InputAngle + 90;         //veranderd de hoek van de servo in een hoek vanaf de horizontale positie
+  posLservo = ServoAngle - 5;           //compenseert de afwijking van de linker servo
+  posRservo = 187 - ServoAngle;         //compenseert de afwijking van de rechter servo
+  myservoYL.write(posLservo);
+  myservoYR.write(posRservo);
+  delay(2000);
+}
+
+
+void Shooter_Init()
+{
+  pinMode(Safety_switch_1, INPUT);
+  pinMode(Input_S1, INPUT_PULLUP);
+  pinMode(Input_S2, INPUT_PULLUP);
+  pinMode(Motor_01, OUTPUT);
+  pinMode(Motor_02, OUTPUT);
+  pinMode(MotorDirection_M1_Pin1, OUTPUT);
+  pinMode(MotorDirection_M1_Pin2, OUTPUT);
+  pinMode(MotorDirection_M2_Pin1, OUTPUT);
+  pinMode(MotorDirection_M2_Pin2, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(Input_S1), ENCODER_READER_1, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Input_S2), ENCODER_READER_2, FALLING);
+
+
+  digitalWrite(MotorDirection_M1_Pin1, LOW);             //Rotating Direction Motor 1
+  digitalWrite(MotorDirection_M1_Pin2, HIGH);
+
+  digitalWrite(MotorDirection_M2_Pin1, LOW);              //Rotating Direction Motor 2
+  digitalWrite(MotorDirection_M2_Pin2, HIGH);
+}
+
+
+
+void ENCODER_READER_1()
+{
+  rpmcount1++;
+  delay(1);
+
+  if (rpmcount1 >= 1) {
+
+    rpm1 = (60000000 / (micros() - timeold1)) * rpmcount1;
+    Motor1RPM = rpm1 / magnets;
+    timeold1 = micros();
+    rpmcount1 = 0;
+
+  }
+}
+
+
+void ENCODER_READER_2()
+{
+  rpmcount2++;
+  delay(1);
+  if (rpmcount2 >= 1) {
+
+    rpm2 = (60000000 / (micros() - timeold2)) * rpmcount2;
+    Motor2RPM = rpm2 / magnets;
+    timeold2 = micros();
+    rpmcount2 = 0;
+  }
+}
+
+
+
+void Read_Serial() {
+
+  Serial.println(" Write down 'Bowlheight Bowldistance Maximumheight' in CM");
+  Serial.println(" for example : '30 800 100' ");
+
+
+
+  while (Serial.available() == 0) {}
+
+
+  // read the incoming height:
+  Y2 = Serial.parseInt();
+  // read the incoming distance:
+  X = Serial.parseInt();
+  // read the incoming ceiling height:
+  Y1 = Serial.parseInt();
+
+  //centimeters to Meters//
+  Y0 = Y0 / 100;
+  Y1 = Y1 / 100;
+  Y2 = Y2 / 100;
+  X = X / 100;
+  r = r / 100;
+  Serial.println();
+  Serial.print("Begin Height:");
+  Serial.print(Y0, 3);
+  Serial.println(" Meters");
+
+  Serial.print("Maximum Height:");
+  Serial.print(Y1, 3);
+  Serial.println(" Meters");
+
+  Serial.print("End Height: ");
+  Serial.print(Y2, 3);
+  Serial.println(" Meters");
+
+  Serial.print("Distance:");
+  Serial.print(X, 3);
+  Serial.println(" Meters");
+
+  Serial.print("Wheel radius:");
+  Serial.print(r, 3);
+  Serial.println(" Meters");
+  Serial.println();
+
+}
+
+
+void Calculation()
+{
+  V0y = sqrt((2) * 9.81 * (Y1 - Y0));
+  V0x = X / ((sqrt(2 * 9.81 * (Y1 - Y0))) / 9.81 + ((sqrt(-2 * 9.81 * (Y2 - Y1))) / 9.81));
+  V0 = sqrt((V0x * V0x) + (V0y * V0y));
+  Angle = ((atan(V0y / V0x)) * 180) / (3.14159);
+  Calculated_RPM = 60 / (2 * 3.14159265359 * r) * V0;
+
+
+  Serial.print("V0x = ");
+  Serial.print(V0x);
+  Serial.println(" M/Sec");
+  Serial.print("V0y = ");
+  Serial.print(V0y);
+  Serial.println(" M/Sec");
+  Serial.print("V0 = ");
+  Serial.print(V0);
+  Serial.println(" M/Sec");
+  Serial.println();
+  Serial.print("Desired Angle = ");
+  Serial.print(Angle);
+  Serial.println(" Degree");
+  Serial.print("Desired RPM = ");
+  Serial.print(Calculated_RPM);
+  Serial.println(" RPM");
+
+}
+
+
+void Read_Inputs()
+{
+  Safety_switch = HIGH; //digitalRead(Safety_switch_1);
+}
+
+void Motor_Speed_1()        ////////////////////////////////////MOTOR1////////////////////////////////////////////////////
+{
+
+  Read_Inputs();
+
+
+
+  if ((Calculated_RPM) < Motor1RPM && Safety_switch == HIGH && (time1d + Writetime) <= millis())                   //Motor 1 slowing down
+  {
+    Speed1 = Speed1 - 1;
+    analogWrite(Motor_01, Speed1);
+    time1d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+  }
+
+  else if ((Calculated_RPM)> Motor1RPM && Safety_switch == HIGH && (time1u + Writetime) <= millis())              //motor 1 speeding up
+  {
+    Speed1 = Speed1 + 1;
+    analogWrite(Motor_01, Speed1);
+    time1u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+  }
+  else if (Safety_switch == LOW)
+  {
+    analogWrite(Motor_01, 0);
+  }
+}
+
+
+void Motor_Speed_2()        ////////////////////////////////////MOTOR2////////////////////////////////////////////////////
+{
+  Read_Inputs();
+
+
+  if ((Calculated_RPM) < Motor2RPM && Safety_switch == HIGH && (time2d + Writetime) <= millis())                   //Motor 2 slowing down
+  {
+    Speed2 = Speed2 - 1;
+    analogWrite(Motor_02, Speed2);
+    time2d = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+  }
+
+  else if ((Calculated_RPM) > Motor2RPM && Safety_switch == HIGH && (time2u + Writetime) <= millis())              //motor 2 speeding up
+  {
+    Speed2 = Speed2 + 1;
+    analogWrite(Motor_02, Speed2);
+    time2u = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+  }
+  else if (Safety_switch == LOW)
+  {
+    analogWrite(Motor_02, 0);
+  }
+}
+
+
+void Up2speed()
+{
+
+
+  if (Calculated_RPM + 20 >= Motor1RPM && Calculated_RPM - 20 <= Motor1RPM)                       // Motor 1 on desired RPM
+  {
+    Motor1Up2speed = 1;
+  }
+  else
+  {
+    Motor1Up2speed = 0;
+  }
+
+
+  if (Calculated_RPM + 20 >= Motor2RPM && Calculated_RPM - 20 <= Motor2RPM)                       // Motor 2 on desired RPM
+  {
+    Motor2Up2speed = 1;
+  }
+  else
+  {
+    Motor2Up2speed = 0;
+  }
+
+
+  if (Motor1Up2speed == 1 && Motor2Up2speed == 1)
+  {
+    readytoshoot = true;
+  }
+  else
+  {
+    readytoshoot = false;
+  }
+}
+
+
+
+
+void SHOOTER()
+{
+
+  Motor_Speed_1();
+  Motor_Speed_2();
+  Up2speed();
+
+}
+
+void loop()
+{
+  switch (state)
+  {
+    case 0:
+   Read_Serial();
+   Calculation();
+
+      state = 1;
+      break;
+
+    case 1:
+       //servoLRcontrol();
+      state = 2;
+      break;
+
+    case 2:
+    Calculated_RPM =2550;
+
+     SHOOTER();
+
+/*
+      while(Input_S1 == true)
+      {
+      if (on_state == false){
+        rpmcount1++;
+      }
+      on_state == false;
+    } 
+    
+      on_state = true;
+    
+    
+    if (rpmcount1>=20){
+          rpm1 = (60000 / (millis() - timeold1)) * rpmcount1;
+    Motor1RPM = rpm1 / magnets;
+    timeold1 = millis();
+    rpmcount1 = 0;
+      break;
+    }
+ */
+      
+
+
+      if ((timeserial + 1000) <= millis())                   //Motor 2 slowing down
+      {
+
+        Serial.print("Calculated_RPM= ");
+        Serial.print(Calculated_RPM);
+        Serial.print("     Motor_1_RPM= ");
+        Serial.print(Motor1RPM);
+        Serial.print("     Motor_1_PWM= ");
+        Serial.print(Speed1);
+        Serial.print("     Motor_2_RPM= ");
+        Serial.print(Motor2RPM);
+        Serial.print("     Motor_2_PWM= ");
+        Serial.println(Speed2);
+
+        timeserial = millis();                                                                                  // timer, otherwise the motor would overshoot its desired speed
+      }
+
+     /* 
+          if(readytoshoot == true)                // if the speed is right go to next state
+              {
+                  state = 3;
+              }
+          else
+              {
+                  SHOOTER();
+              }
+      */
+      break;
+
+    case 3:
+      // if(Up2Speed = high)
+      // Duw het balletje vanuit magazijn
+
+
+      break;
+
+    default:
+      // Default state
+      break;
+  }
+}
